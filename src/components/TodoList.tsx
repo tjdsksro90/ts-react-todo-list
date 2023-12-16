@@ -1,5 +1,4 @@
 import React from "react";
-import useTodos from "../hooks/useTodos";
 
 interface Props {
   todos: Todo[];
@@ -7,7 +6,17 @@ interface Props {
 }
 
 const TodoList = ({ todos, setTodos }: Props) => {
-  const { deleteTodo, toggleTodo } = useTodos(setTodos);
+  const toggleTodo = (id: number) => {
+    setTodos((prev) =>
+      prev.map((todo) => {
+        if (todo.id === id) return { ...todo, isDone: !todo.isDone };
+        return todo;
+      })
+    );
+  };
+  const deleteTodo = (id: number) => {
+    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+  };
 
   const doneTodos = todos.filter((todo) => todo.isDone);
   const notDoneTodos = todos.filter((todo) => !todo.isDone);
@@ -30,7 +39,7 @@ const TodoList = ({ todos, setTodos }: Props) => {
             <h2>{title}</h2>
             <p>{content}</p>
             <button onClick={() => deleteTodo(id)}>삭제</button>
-            <button onClick={() => toggleTodo(id)}>완료</button>
+            <button onClick={() => toggleTodo(id)}>취소</button>
           </li>
         ))}
       </ul>

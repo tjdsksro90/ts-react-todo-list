@@ -1,5 +1,4 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import useTodos from "../hooks/useTodos";
 
 interface Props {
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
@@ -8,8 +7,6 @@ interface Props {
 const TodoInput = ({ setTodos }: Props) => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
-
-  const { addTodo } = useTodos(setTodos);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === "title") setTitle(e.target.value);
@@ -28,6 +25,10 @@ const TodoInput = ({ setTodos }: Props) => {
       content,
       isDone: false,
     });
+  };
+
+  const addTodo = (todo: Todo) => {
+    setTodos((prev) => [...prev, todo]);
   };
   return (
     <>

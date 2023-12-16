@@ -14,7 +14,7 @@ function App() {
       id: 2,
       title: "할일 타이틀 2",
       content: "할일 내용 2",
-      isDone: false,
+      isDone: true,
     },
   ]);
   return (
