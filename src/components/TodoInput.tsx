@@ -1,10 +1,10 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addTodo } from "../redux/modules/todos";
 
-interface Props {
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
-}
+const TodoInput = () => {
+  const dispatch = useDispatch();
 
-const TodoInput = ({ setTodos }: Props) => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
 
@@ -19,17 +19,16 @@ const TodoInput = ({ setTodos }: Props) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    addTodo({
+    const newTodo = {
       id: Date.now(),
       title,
       content,
       isDone: false,
-    });
+    };
+
+    dispatch(addTodo(newTodo));
   };
 
-  const addTodo = (todo: Todo) => {
-    setTodos((prev) => [...prev, todo]);
-  };
   return (
     <>
       <form onSubmit={handleSubmit}>

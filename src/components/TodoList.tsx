@@ -1,22 +1,11 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteTodo, toggleTodo } from "../redux/modules/todos";
+import { RootState } from "../redux/config/configStore";
 
-interface Props {
-  todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
-}
-
-const TodoList = ({ todos, setTodos }: Props) => {
-  const toggleTodo = (id: number) => {
-    setTodos((prev) =>
-      prev.map((todo) => {
-        if (todo.id === id) return { ...todo, isDone: !todo.isDone };
-        return todo;
-      })
-    );
-  };
-  const deleteTodo = (id: number) => {
-    setTodos((prev) => prev.filter((todo) => todo.id !== id));
-  };
+const TodoList = () => {
+  const dispatch = useDispatch();
+  const { todos } = useSelector((state: RootState) => state);
 
   const doneTodos = todos.filter((todo) => todo.isDone);
   const notDoneTodos = todos.filter((todo) => !todo.isDone);
@@ -27,8 +16,8 @@ const TodoList = ({ todos, setTodos }: Props) => {
           <li key={id}>
             <h2>{title}</h2>
             <p>{content}</p>
-            <button onClick={() => deleteTodo(id)}>삭제</button>
-            <button onClick={() => toggleTodo(id)}>완료</button>
+            <button onClick={() => dispatch(deleteTodo(id))}>삭제</button>
+            <button onClick={() => dispatch(toggleTodo(id))}>완료</button>
           </li>
         ))}
       </ul>
@@ -38,8 +27,8 @@ const TodoList = ({ todos, setTodos }: Props) => {
           <li key={id}>
             <h2>{title}</h2>
             <p>{content}</p>
-            <button onClick={() => deleteTodo(id)}>삭제</button>
-            <button onClick={() => toggleTodo(id)}>취소</button>
+            <button onClick={() => dispatch(deleteTodo(id))}>삭제</button>
+            <button onClick={() => dispatch(toggleTodo(id))}>취소</button>
           </li>
         ))}
       </ul>
