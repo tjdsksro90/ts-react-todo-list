@@ -1,9 +1,10 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
+import { AppDispatch } from "../redux/config/configStore";
 import { addTodo } from "../redux/modules/todos";
 
 const TodoInput = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -18,6 +19,7 @@ const TodoInput = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setTitle("aaaa");
 
     const newTodo = {
       id: Date.now(),
@@ -27,6 +29,8 @@ const TodoInput = () => {
     };
 
     dispatch(addTodo(newTodo));
+    setTitle("");
+    setContent("");
   };
 
   return (
@@ -37,6 +41,7 @@ const TodoInput = () => {
             type="text"
             name="title"
             onChange={handleChange}
+            value={title}
             placeholder="제목을 입력해주세요"
             required
           />
@@ -44,6 +49,7 @@ const TodoInput = () => {
             type="text"
             name="content"
             onChange={handleChange}
+            value={content}
             placeholder="내용을 입력해주세요"
             required
           />
