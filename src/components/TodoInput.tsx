@@ -1,10 +1,12 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import { useDispatch } from "react-redux";
-import { addTodo } from "../redux/modules/todos";
+import { ChangeEvent, FormEvent, useState } from "react";
+import axios from "axios";
 
-const TodoInput = () => {
-  const dispatch = useDispatch();
+interface Props {
+  todos: Todo[];
+  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+}
 
+const TodoInput = ({ todos, setTodos }: Props) => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
 
@@ -26,7 +28,16 @@ const TodoInput = () => {
       isDone: false,
     };
 
-    dispatch(addTodo(newTodo));
+    addTodo(newTodo);
+  };
+
+  const addTodo = async (newTodo: Todo) => {
+    try {
+      const response = await axios.post(`http://localhost:4000/todos`, newTodo);
+      setTodos([...todos, response.data]);
+    } catch (err) {
+      console.log(err, "Error");
+    }
   };
 
   return (
