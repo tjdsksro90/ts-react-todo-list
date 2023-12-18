@@ -1,10 +1,44 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../redux/config/configStore";
-import { addTodo } from "../redux/modules/todos";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { addTodo } from "../api/todos";
 
 const TodoInput = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const queryClient = useQueryClient();
+
+  const addMutation = useMutation({
+    mutationFn: (newTodo: Todo) => addTodo(newTodo),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+      console.log("성공하였습니다!");
+    },
+    onMutate: async (newTodo: Todo) => {
+      console.log("onMutate 호출");
+      await queryClient.cancelQueries({ queryKey: ["todos"] });
+
+      const previousTodos = queryClient.getQueryData(["todos"]);
+
+      queryClient.setQueryData(["todos"], (prev: Todo[]) => [...prev, newTodo]);
+
+      return { previousTodos };
+    },
+    onError: ({
+      err,
+      newTodo,
+      context,
+    }: {
+      err: string;
+      newTodo: Todo;
+      context: any;
+    }) => {
+      console.log("onError", err);
+      console.log("context:", context);
+      queryClient.setQueryData(["todos"], context.previousTodos);
+    },
+    onSettled: () => {
+      console.log("onSettled");
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -19,16 +53,15 @@ const TodoInput = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setTitle("aaaa");
 
-    const newTodo = {
+    const newTodo: Todo = {
       id: Date.now(),
       title,
       content,
       isDone: false,
     };
 
-    dispatch(addTodo(newTodo));
+    addMutation.mutate(newTodo);
     setTitle("");
     setContent("");
   };
