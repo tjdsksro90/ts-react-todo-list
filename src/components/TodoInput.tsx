@@ -1,47 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { addTodo } from "../api/todos";
+import { useTodos } from "../hooks";
 
 const TodoInput = () => {
-  const queryClient = useQueryClient();
-
-  const addMutation = useMutation({
-    mutationFn: (newTodo: Todo) => addTodo(newTodo),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-      console.log("성공하였습니다!");
-    },
-    onMutate: async (newTodo: Todo) => {
-      console.log("onMutate 호출");
-      await queryClient.cancelQueries({ queryKey: ["todos"] });
-
-      const previousTodos = queryClient.getQueryData(["todos"]);
-
-      queryClient.setQueryData(["todos"], (prev: Todo[]) => [...prev, newTodo]);
-
-      return { previousTodos };
-    },
-    onError: ({
-      err,
-      newTodo,
-      context,
-    }: {
-      err: string;
-      newTodo: Todo;
-      context: any;
-    }) => {
-      console.log("onError", err);
-      console.log("context:", context);
-      queryClient.setQueryData(["todos"], context.previousTodos);
-    },
-    onSettled: () => {
-      console.log("onSettled");
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
-  });
-
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
+
+  const { addTodo } = useTodos();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === "title") setTitle(e.target.value);
@@ -61,7 +25,7 @@ const TodoInput = () => {
       isDone: false,
     };
 
-    addMutation.mutate(newTodo);
+    addTodo(newTodo);
     setTitle("");
     setContent("");
   };
