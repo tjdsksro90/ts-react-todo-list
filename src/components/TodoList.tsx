@@ -18,23 +18,23 @@ const TodoList = () => {
       {!isLoading && (
         <>
           <ul>
-            {todoList?.map(({ id, title, content }) => (
-              <li key={id}>
-                <h2>{title}</h2>
-                <p>{content}</p>
-                <button onClick={() => deleteTodo(id)}>삭제</button>
-                <button onClick={() => toggleTodo(id)}>완료</button>
+            {todoList?.map((item) => (
+              <li key={item.id}>
+                <h2>{item.title}</h2>
+                <p>{item.content}</p>
+                <button onClick={() => deleteTodo(item.id)}>삭제</button>
+                <button onClick={() => toggleTodo(item)}>완료</button>
               </li>
             ))}
           </ul>
           <hr />
           <ul>
-            {doneList?.map(({ id, title, content }) => (
-              <li key={id}>
-                <h2>{title}</h2>
-                <p>{content}</p>
-                <button onClick={() => deleteTodo(id)}>삭제</button>
-                <button onClick={() => toggleTodo(id)}>취소</button>
+            {doneList?.map((item) => (
+              <li key={item.id}>
+                <h2>{item.title}</h2>
+                <p>{item.content}</p>
+                <button onClick={() => deleteTodo(item.id)}>삭제</button>
+                <button onClick={() => toggleTodo(item)}>취소</button>
               </li>
             ))}
           </ul>

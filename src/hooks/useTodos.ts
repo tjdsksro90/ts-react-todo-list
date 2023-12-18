@@ -27,8 +27,8 @@ export const useTodos = () => {
     await deleteMutaion.mutateAsync(id);
   };
 
-  const toggleTodo = async (id: number) => {
-    await toggleMutaion.mutateAsync(id);
+  const toggleTodo = async (todo: Todo) => {
+    await toggleMutaion.mutateAsync(todo);
   };
 
   return {

@@ -20,9 +20,12 @@ export const deleteTodo = async (id: number) => {
   return response.data;
 };
 
-export const toggleTodo = async (id: number) => {
+export const toggleTodo = async (todo: Todo) => {
   console.log("toggleTodo 호출");
 
-  const response = await axios.put(`http://localhost:4000/todos/${id}`);
+  const response = await axios.patch(`http://localhost:4000/todos/${todo.id}`, {
+    ...todo,
+    isDone: !todo.isDone,
+  });
   return response.data;
 };
